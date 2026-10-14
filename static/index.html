@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a1b">
+  <title>Checkers Arena — Play. Learn. Rise.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Checkers Arena home"><span class="brand-mark">C</span><span>CHECKERS<span class="brand-light">ARENA</span></span></a>
+      <div class="online-indicator"><span class="pulse"></span>LIVE ARENA</div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> YOUR NEXT MOVE STARTS HERE</p>
+        <h1>Play sharp.<br><span>Rise higher.</span></h1>
+        <p class="hero-text">A little strategy goes a long way. Find a rival, make your move, and watch your rating climb.</p>
+        <div class="hero-features"><span>01 &nbsp; LIVE MATCHMAKING</span><span>02 &nbsp; ELO RANKINGS</span><span>03 &nbsp; REAL SKILL GROWTH</span></div>
+      </div>
+      <div class="hero-decoration" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="hero-token token-one"></div><div class="hero-token token-two"></div><div class="hero-token token-three"></div><div class="hero-token token-four"></div><div class="hero-cross">✳</div></div>
+    </section>
+
+    <section id="auth-view" class="auth-card">
+      <div class="auth-heading"><div><p class="eyebrow">THE BOARD IS YOURS</p><h2>Step into the arena</h2></div><span class="card-index">01 / 03</span></div>
+      <div class="auth-tabs" role="tablist" aria-label="Account access"><button class="tab active" data-mode="register" role="tab" aria-selected="true">Create account</button><button class="tab" data-mode="login" role="tab" aria-selected="false">Sign in</button></div>
+      <form id="auth-form">
+        <label for="username">USERNAME</label><input id="username" name="username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" placeholder="Choose your handle" required>
+        <label for="password">PASSWORD</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="At least 8 characters" required>
+        <p id="auth-message" class="message" role="status"></p>
+        <button class="primary-button" type="submit"><span id="auth-action">CREATE FREE ACCOUNT</span><span class="button-arrow">↗</span></button>
+      </form>
+      <p class="microcopy">Free to play. Made for the love of the game.</p>
+    </section>
+
+    <section id="lobby-view" class="lobby-card hidden">
+      <div class="lobby-head"><div><p class="eyebrow">WELCOME TO THE ARENA</p><h2>Good to have you, <span id="player-name">Player</span>.</h2></div><button id="signout-button" class="text-button">SIGN OUT ↗</button></div>
+      <div class="stats-grid"><div class="stat"><span class="stat-label">RATING</span><strong id="player-rating">1000</strong><span class="stat-note">ELO points</span></div><div class="stat"><span class="stat-label">WINS</span><strong id="player-wins">0</strong><span class="stat-note">hard-earned</span></div><div class="stat"><span class="stat-label">RECORD</span><strong id="player-record">0—0</strong><span class="stat-note">wins — losses</span></div></div>
+      <button id="queue-button" class="primary-button queue-button"><span>FIND AN OPPONENT</span><span class="button-arrow">↗</span></button>
+      <p class="lobby-note"><span class="pulse"></span> Paired with players near your rating</p>
+    </section>
+
+    <section id="game-view" class="game-layout hidden">
+      <div class="game-topline"><div><p class="eyebrow">LIVE MATCH</p><h2>Make it count.</h2></div><button id="resign-button" class="text-button">RESIGN</button></div>
+      <div class="opponent-strip"><div class="avatar">♟</div><div><span class="opponent-label">YOUR OPPONENT</span><strong id="opponent-name">Searching…</strong></div><span id="turn-indicator" class="turn-pill">WAITING</span></div>
+      <div id="board" class="board" role="grid" aria-label="Checkers board"></div>
+      <div class="game-footer"><p id="game-message" role="status">Finding your next challenge…</p><div class="board-key"><span class="key-dot red-dot"></span> YOU <span class="key-dot dark-dot"></span> OPPONENT</div></div>
+      <button id="rematch-button" class="primary-button hidden"><span>PLAY AGAIN</span><span class="button-arrow">↗</span></button>
+    </section>
+    <footer><span>STRATEGY IS A JOURNEY. ENJOY EVERY MOVE.</span><span>CHECKERS ARENA &nbsp;·&nbsp; EST. 2026</span></footer>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
