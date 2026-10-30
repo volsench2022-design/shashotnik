@@ -1,6 +1,6 @@
 # Checkers Arena
 
-A browser-based English draughts (American checkers) game with real-time matchmaking, accounts, persistent player records, and ELO ratings. The server enforces all game rules and validates every move.
+A cross-platform browser game and Windows desktop app for English draughts (American checkers), with real-time matchmaking, accounts, persistent player records, ELO ratings, a leaderboard, and live match chat. The server enforces all game rules and validates every move.
 
 ## Run locally
 
@@ -38,4 +38,42 @@ Matchmaking is held in memory, so run a single application worker. Local develop
 - A game ends when a player has no legal moves, resigns, or disconnects. A draw is declared after 80 consecutive non-capturing moves.
 - Players start at 1000 ELO. Ratings and win/loss/draw records are saved after each completed game.
 
-Run the rules tests with `python -m unittest discover -s tests`.
+Run the test suite with `python -m unittest discover -s tests`.
+
+## Windows desktop app
+
+The desktop app can either host a game server on the player's PC or connect directly to another player's host. There is no required paid host or central matchmaking service in this mode. The host's PC must remain on with the app running while players are connected. The first desktop release uses one direct host per game; automatic peer-to-peer host handoff is a later step.
+
+```powershell
+python -m venv .venv-desktop
+.\.venv-desktop\Scripts\Activate.ps1
+python -m pip install -r requirements-desktop.txt
+python desktop.py
+```
+
+On first launch, choose **Yes** to host on this PC or **No** to enter a host's invite address. To host directly from the command line, run `python desktop.py --host-game`; to join a host, run `python desktop.py --server-url https://your-host.example.com`. The `CHECKERS_SERVER_URL` environment variable is also supported. Each host keeps its own accounts and ratings in `%APPDATA%\Checkers Arena\checkers.db`.
+
+### Invite players on the same Wi-Fi
+
+1. Start the desktop app and choose **Yes** to host.
+2. Allow Checkers Arena through Windows Firewall on your private network if Windows asks.
+3. Give friends one of the local network addresses shown by the app. They choose **No** on startup and enter that address.
+
+### Invite players over the internet
+
+This requires more setup because home routers block unsolicited incoming connections by default:
+
+1. Give the host PC a reserved LAN address in the router and forward TCP port `8000` to that PC.
+2. Allow the app through Windows Firewall for the network profile you use.
+3. Use a domain name pointing to your internet connection and obtain a valid TLS certificate for it. Start the host with `python desktop.py --host-game --ssl-certfile fullchain.pem --ssl-keyfile privkey.pem`.
+4. Share the HTTPS address, such as `https://games.example.com`, with players. They join using `python desktop.py --server-url https://games.example.com`.
+
+Do not expose a public HTTP host: account passwords and session tokens must be protected by HTTPS. Dynamic public IP addresses may require a dynamic-DNS domain. Port-forwarding and certificate setup depend on the router and network provider; some networks do not allow inbound connections.
+
+To package a Windows executable from Windows:
+
+```powershell
+pyinstaller --noconfirm --windowed --onefile --name CheckersArena --add-data "static;static" desktop.py
+```
+
+The executable is written to `dist\CheckersArena.exe`. It can host locally with `CheckersArena.exe --host-game` or connect to an invited host with `CheckersArena.exe --server-url https://your-host.example.com`.

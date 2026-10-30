@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+checkers.db*
+.env
+/build/
+/dist/
+/CheckersArena.spec
+/CheckersArenaDebug.spec

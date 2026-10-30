@@ -49,6 +49,13 @@ input:focus{border-color:var(--lime)}input::placeholder{color:#63736e}
 .stat{padding:14px 16px;display:flex;flex-direction:column;gap:4px}.stat+.stat{border-left:1px solid var(--line)}
 .stat-label,.opponent-label{font:10px "DM Mono",monospace;color:#8c9e99;letter-spacing:.09em}
 .stat strong{font:700 25px Manrope,sans-serif;color:var(--lime)}.stat-note{font-size:10px;color:#71827d}
+.leaderboard{border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin:0 0 20px}
+.leaderboard-heading{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}
+.leaderboard-heading .eyebrow{margin-bottom:5px}.leaderboard-heading h3,.chat-panel h3{font:700 15px Manrope,sans-serif;margin:0}
+.leaderboard-heading .stat-note{font:9px "DM Mono",monospace;letter-spacing:.06em}
+.leaderboard ol{list-style:none;padding:0;margin:0}.leaderboard-row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #293938;font-size:12px}
+.leaderboard-rank{font:10px "DM Mono",monospace;color:#849590}.leaderboard-name{font-weight:600}.leaderboard-rating{font:11px "DM Mono",monospace;color:var(--lime)}
+.leaderboard-empty{padding:10px 0 2px;border-top:1px solid #293938;color:#849590;font-size:12px}
 .queue-button{margin-top:0}.lobby-note{justify-content:center;margin:17px 0 0;letter-spacing:.03em}
 .game-layout{margin-top:28px;padding:23px 28px}
 .game-topline{align-items:center;margin-bottom:18px}.game-topline h2{font-size:20px}
@@ -69,5 +76,11 @@ input:focus{border-color:var(--lime)}input::placeholder{color:#63736e}
 .game-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0 3px}
 .game-footer p{font-size:12px;color:#afbfba;margin:0}.board-key{font:9px "DM Mono",monospace;color:#889993;display:flex;gap:7px;align-items:center;white-space:nowrap}
 .key-dot{width:9px;height:9px;border-radius:50%}.red-dot{background:var(--coral)}.dark-dot{background:#64746d}
+.chat-panel{border-top:1px solid var(--line);padding-top:14px;margin-top:18px}
+.chat-panel h3{margin-bottom:10px}.chat-messages{height:130px;overflow-y:auto;list-style:none;margin:0;padding:10px;background:#101a1b;border:1px solid #293938;border-radius:5px}
+.chat-messages li{display:flex;gap:7px;margin:0 0 7px;font-size:11px;line-height:1.45;overflow-wrap:anywhere}.chat-messages li:last-child{margin-bottom:0}
+.chat-messages strong{color:var(--lime);white-space:nowrap}.chat-empty{color:#71827d}
+.chat-form{display:flex;gap:8px;margin-top:8px}.chat-form input{min-width:0}.chat-form input:disabled{opacity:.55}.chat-form button{margin:0;flex:0 0 auto}.chat-form button:disabled{opacity:.5;cursor:not-allowed}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 footer{border-top:1px solid #263536;padding:17px 0 23px;display:flex;justify-content:space-between;color:#61726d;font:9px "DM Mono",monospace;letter-spacing:.05em}
 @media(max-width:700px){.shell{padding:0 20px}.topbar{height:68px}.hero{min-height:275px}.hero-features{gap:10px;flex-wrap:wrap;font-size:8px}.hero-decoration{opacity:.25;right:-100px}.auth-card,.lobby-card,.game-layout{padding:23px 18px;margin-top:24px}.game-layout{padding:19px 12px}.stats-grid .stat{padding:12px 9px}.stat strong{font-size:21px}.game-footer{align-items:flex-start;flex-direction:column}.board-key{margin-left:2px}footer{gap:10px;font-size:7px}footer span:last-child{text-align:right}}

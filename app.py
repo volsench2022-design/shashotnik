@@ -10,7 +10,8 @@ import sqlite3
 import time
 import uuid
 from collections import deque
-from contextlib import asynccontextmanager
+from collections.abc import Iterator
+from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -29,11 +30,19 @@ PASSWORD_ITERATIONS = 310_000
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{3,20}$")
 
 
-def connect_db() -> sqlite3.Connection:
+@contextmanager
+def connect_db() -> Iterator[sqlite3.Connection]:
     connection = sqlite3.connect(DB_PATH, timeout=10)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    return connection
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys = ON")
+        yield connection
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
 
 
 def initialize_db() -> None:
@@ -198,6 +207,32 @@ def authenticated_user(authorization: str | None) -> sqlite3.Row:
 @app.get("/api/me")
 def me(authorization: str | None = Header(default=None)) -> dict[str, Any]:
     return user_dict(authenticated_user(authorization))
+
+
+@app.get("/api/leaderboard")
+def leaderboard() -> dict[str, list[dict[str, Any]]]:
+    with connect_db() as db:
+        rows = db.execute(
+            """
+            SELECT username, rating, wins, losses, draws
+            FROM users
+            ORDER BY rating DESC, wins DESC, username COLLATE NOCASE
+            LIMIT 10
+            """
+        ).fetchall()
+    return {
+        "players": [
+            {
+                "rank": rank,
+                "username": row["username"],
+                "rating": row["rating"],
+                "wins": row["wins"],
+                "losses": row["losses"],
+                "draws": row["draws"],
+            }
+            for rank, row in enumerate(rows, start=1)
+        ]
+    }
 
 
 def board_state(match: Match, viewer_id: str) -> dict[str, Any]:
@@ -383,6 +418,38 @@ async def handle_move(user_id: str, message: dict[str, Any]) -> None:
                     await websocket.send_json(board_state(match, player_id))
 
 
+async def handle_chat(user_id: str, message: dict[str, Any]) -> None:
+    async with match_lock:
+        match = user_matches.get(user_id)
+        if match is None or match.finished:
+            await connections[user_id].send_json(
+                {"type": "error", "message": "Chat is available during an active match."}
+            )
+            return
+        text = message.get("message")
+        if not isinstance(text, str):
+            await connections[user_id].send_json(
+                {"type": "error", "message": "Enter a valid chat message."}
+            )
+            return
+        text = text.strip()
+        if not text or len(text) > 300:
+            await connections[user_id].send_json(
+                {"type": "error", "message": "Messages must be between 1 and 300 characters."}
+            )
+            return
+        payload = {
+            "type": "chat",
+            "username": match.names[user_id],
+            "message": text,
+            "sentAt": int(time.time()),
+        }
+        for player_id in match.players:
+            connection = connections.get(player_id)
+            if connection is not None:
+                await connection.send_json(payload)
+
+
 async def websocket_user(websocket: WebSocket) -> sqlite3.Row | None:
     try:
         message = await asyncio.wait_for(websocket.receive_json(), timeout=10)
@@ -420,6 +487,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 await websocket.send_json({"type": "error", "message": "Unexpected message."})
             elif message.get("type") == "move":
                 await handle_move(user_id, message)
+            elif message.get("type") == "chat":
+                await handle_chat(user_id, message)
             elif message.get("type") == "resign":
                 async with match_lock:
                     match = user_matches.get(user_id)
